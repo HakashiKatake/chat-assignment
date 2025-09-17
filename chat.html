@@ -14,11 +14,11 @@
 
     <script type="module">
       import { firebaseConfig } from './config.js';
+    
       
-      // Initialize Firebase
       firebase.initializeApp(firebaseConfig);
 
-      // Get a reference to the database and make it globally available
+      
       const db = firebase.database();
       window.db = db;
     </script>
@@ -49,7 +49,7 @@
 <body>
         <div id="chat"></div>   
     <div>
-        <!-- get user msg -->
+      
         <input type="text" name="message" id="msg" placeholder="typing...." value="" required>
         <button id="send-msg">
             <span class="material-symbols-outlined">
@@ -65,11 +65,11 @@
     <script type="module">
         import { initChat } from './function.js';
 
-        // Initialize chat functionality
+        
         const chat = initChat(db);
         chat.setupMessageListener();
 
-        // Set up send message functionality
+        
         const sendButton = document.getElementById('send-msg');
         sendButton.addEventListener('click', async () => {
             const messageInput = document.getElementById('msg');
@@ -86,7 +86,7 @@
             }
         });
 
-        // Add enter key support for sending messages
+      
         document.getElementById('msg').addEventListener('keypress', async (e) => {
             if (e.key === 'Enter') {
                 sendButton.click();
