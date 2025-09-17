@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat</title>
+
+    <!-- Firebase App (the core Firebase SDK) -->
+    <script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-app-compat.js"></script>
+    
+    <!-- Realtime Database -->
+    <script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-database-compat.js"></script>
+
+    <script type="module">
+      import { firebaseConfig } from './config.js';
+      
+      // Initialize Firebase
+      firebase.initializeApp(firebaseConfig);
+
+      // Get a reference to the database and make it globally available
+      const db = firebase.database();
+      window.db = db;
+    </script>
+
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=chevron_right" />
+    <style>
+        .message-container {
+            padding: 10px;
+            margin: 5px 0;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .message-container p {
+            margin: 0;
+            flex-grow: 1;
+        }
+        .message-container button {
+            padding: 5px 10px;
+            margin-left: 5px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+        <div id="chat"></div>   
+    <div>
+        <!-- get user msg -->
+        <input type="text" name="message" id="msg" placeholder="typing...." value="" required>
+        <button id="send-msg">
+            <span class="material-symbols-outlined">
+                chevron_right
+            </span>
+        </button>
+    </div>
+    
+    
+
+    <script src="delete.js"></script>
+
+    <script type="module">
+        import { initChat } from './function.js';
+
+        // Initialize chat functionality
+        const chat = initChat(db);
+        chat.setupMessageListener();
+
+        // Set up send message functionality
+        const sendButton = document.getElementById('send-msg');
+        sendButton.addEventListener('click', async () => {
+            const messageInput = document.getElementById('msg');
+            const message = messageInput.value;
+            
+            if (message.trim()) {
+                try {
+                    await chat.sendMessage(message);
+                    console.log('Message sent successfully');
+                    messageInput.value = '';
+                } catch (error) {
+                    console.error('Error sending message:', error);
+                }
+            }
+        });
+
+        // Add enter key support for sending messages
+        document.getElementById('msg').addEventListener('keypress', async (e) => {
+            if (e.key === 'Enter') {
+                sendButton.click();
+            }
+        });
+    </script>
+</body>
+
+</html>
